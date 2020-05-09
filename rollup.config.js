@@ -88,6 +88,35 @@ if (process.env.NODE_ENV === 'production') {
       ],
     },
   );
+
+  configs.push(
+    {
+      input: 'src/iife.js',
+
+      output: [
+        {
+          name: 'sendsay',
+          moduleName: 'sendsay',
+          file: 'dist/sendsay-api.js',
+          format: 'iife',
+        },
+      ],
+
+      plugins: [
+        resolve(),
+
+        babel({
+          exclude: 'node_modules/**',
+        }),
+
+        commonjs({
+          ignoreGlobal: true,
+        }),
+
+        json(),
+      ],
+    },
+  );
 }
 
 export default configs;

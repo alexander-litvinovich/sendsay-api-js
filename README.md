@@ -195,3 +195,10 @@ The api key for authentication.
 
 The auth credentials (`login`, `sublogin`, `password`) for authentication.
 
+#### Raw server response
+
+Raw server responses could be used for implementing API-console, where a server response should be shown fully and unmodified.
+
+```javascript
+request(req = {}, options = {}, rawResponse = false);
+````

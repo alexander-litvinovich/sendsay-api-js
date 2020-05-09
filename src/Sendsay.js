@@ -59,19 +59,23 @@ class Sendsay {
     })
   )
 
-  request = (req = {}, options = {}) => {
+  request = (req = {}, options = {}, rawResponse = false) => {
     let seq;
 
-    if (!this.apiKey && !this.session && this.auth && NO_AUTHENTICATION_REQUIRED_ACTIONS.indexOf(req.action) === -1) {
+    if (
+      !this.apiKey
+      && !this.session
+      && this.auth
+      && NO_AUTHENTICATION_REQUIRED_ACTIONS.indexOf(req.action) === -1) {
       seq = this.login(this.auth);
     } else {
       seq = Promise.resolve();
     }
 
-    return seq.then(() => this.performRequest(req, options));
+    return seq.then(() => this.performRequest(req, options, rawResponse));
   }
 
-  performRequest = (req, options = {}) => {
+  performRequest = (req, options = {}, rawResponse = false) => {
     const nextOptions = { redirected: 0, ...options };
     const body = this.getRequestBody(req);
     const headers = {
@@ -86,7 +90,7 @@ class Sendsay {
       .catch(this.catchConnectionErrors)
       .then(this.checkStatus)
       .then(this.parseResponse)
-      .then(res => this.checkResponseErrors(req, res, nextOptions))
+      .then(res => (rawResponse ? res : this.checkResponseErrors(req, res, nextOptions)))
       .then(res => this.checkRedirect(req, res, nextOptions));
   }
 

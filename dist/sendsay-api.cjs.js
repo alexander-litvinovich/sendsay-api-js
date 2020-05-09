@@ -89,6 +89,7 @@ var Sendsay = function () {
     this.request = function () {
       var req = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var rawResponse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
       var seq = void 0;
 
@@ -99,12 +100,13 @@ var Sendsay = function () {
       }
 
       return seq.then(function () {
-        return _this.performRequest(req, options);
+        return _this.performRequest(req, options, rawResponse);
       });
     };
 
     this.performRequest = function (req) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var rawResponse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
       var nextOptions = _extends({ redirected: 0 }, options);
       var body = _this.getRequestBody(req);
@@ -117,7 +119,7 @@ var Sendsay = function () {
         body: body,
         headers: headers
       }).catch(_this.catchConnectionErrors).then(_this.checkStatus).then(_this.parseResponse).then(function (res) {
-        return _this.checkResponseErrors(req, res, nextOptions);
+        return rawResponse ? res : _this.checkResponseErrors(req, res, nextOptions);
       }).then(function (res) {
         return _this.checkRedirect(req, res, nextOptions);
       });
